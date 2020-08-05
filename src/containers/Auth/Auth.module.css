@@ -1,0 +1,66 @@
+.Auth {
+  display: flex;
+  flex-direction: column;
+}
+
+.Logo {
+  align-self: center;
+  margin: auto;
+  padding: 25px 0;
+}
+
+.Logo img {
+  width: 270px;
+}
+
+.Box {
+  background: white;
+  width: 420px;
+  max-width: 95%;
+  align-self: center;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 10px 1px rgba(204, 202, 204, 1);
+}
+
+.BoxHeader {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.BoxTitle {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.BoxText{
+  padding-top: 10px;
+  font-size: 12px;
+}
+
+.AuthButton {
+  width: 100%;
+  background-color: #4c12a1;
+  border: #4c12a1;
+  border-radius: 18px;
+  height: 40px;
+}
+
+.AuthButton:hover {
+  background-color: #663da5;
+}
+
+.BoxLink {
+  display: block;
+  text-align: center;
+}
+
+.InputBox {
+  border-radius: 18px;
+  height: 40px;
+}
+
+.InputBox:focus {
+  background-color: #4c12a1;
+}
