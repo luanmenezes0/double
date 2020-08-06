@@ -40,11 +40,8 @@
 }
 
 .AuthButton {
-  width: 100%;
   background-color: #4c12a1;
   border: #4c12a1;
-  border-radius: 18px;
-  height: 40px;
 }
 
 .AuthButton:hover {
@@ -61,6 +58,6 @@
   height: 40px;
 }
 
-.InputBox:focus {
-  background-color: #4c12a1;
+.InputBox:hover {
+  border-color: #4c12a1;
 }
