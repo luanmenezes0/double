@@ -77,7 +77,7 @@ class Tickets extends Component {
         </main>
       </>
     );
-    /* return ticketsPage; */
+    //return ticketsPage
     return this.props.isAuth ? ticketsPage : <Redirect to="/auth" />
   }
 }
