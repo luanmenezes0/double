@@ -1,0 +1,11 @@
+.Tickets {
+  margin: 16px;
+  padding: 24px;
+  border-radius: 16px;
+  background-color: white;
+  height: 600px;
+}
+
+.Modal {
+  border-radius: 16px;
+}
