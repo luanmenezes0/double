@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import styles from "./Auth.module.css";
-import { auth, changePasswordInputAuth, changeEmailInputAuth } from "../../redux/Auth/actions";
+import {
+  auth,
+  changePasswordInputAuth,
+  changeEmailInputAuth,
+} from "../../redux/Auth/actions";
 import { Button, Input, Form } from "antd";
 import { connect } from "react-redux";
 import Logo from "./logo.png";
@@ -26,7 +30,7 @@ class Auth extends Component {
             <div className={styles.BoxText}>Faça login para continuar</div>
           </div>
 
-          <Form onFinish={this.authUser}>
+          <Form size="large" onFinish={this.authUser}>
             <Form.Item>
               <span className="required">E-mail</span>
               <Input
@@ -46,7 +50,6 @@ class Auth extends Component {
 
             <Form.Item>
               <Button
-                size="large"
                 block
                 shape="round"
                 type="primary"
@@ -58,7 +61,7 @@ class Auth extends Component {
             </Form.Item>
           </Form>
           <span className={styles.BoxLink}>
-            <a href="/">Crie uma conta</a>{" "}
+            <a href="/">Crie uma conta</a>
           </span>
         </div>
       </div>
@@ -69,13 +72,13 @@ class Auth extends Component {
 const mapStateToProps = (state) => ({
   isAuth: state.auth.isAuth,
   email: state.auth.email,
-  password: state.auth.password
+  password: state.auth.password,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onAuthUser: (email, password) => dispatch(auth(email, password)),
   onPasswordChange: (password) => dispatch(changePasswordInputAuth(password)),
-  onEmailChange: (email) => dispatch(changeEmailInputAuth(email))
+  onEmailChange: (email) => dispatch(changeEmailInputAuth(email)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);
