@@ -1,0 +1,39 @@
+.Modal {
+  border-radius: 16px;
+  top: 20px;
+}
+
+.Disabled {
+  pointer-events: none;
+}
+
+.Low span {
+  display: inline-block;
+  color: rgb(32, 170, 32);
+  font-size: 0.8rem;
+  padding: 0;
+  padding-left: 4px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.Middle span {
+  display: inline-block;
+  color: rgb(228, 228, 0);
+  font-size: 0.8rem;
+  padding: 0;
+  padding-left: 4px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.High span {
+  display: inline-block;
+  color: red;
+  font-size: 0.8rem;
+  padding: 0;
+  padding-left: 4px;
+  margin: 0;
+  font-weight: bold;
+}
+

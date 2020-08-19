@@ -9,9 +9,7 @@ import store from "./redux/configStore";
 const app = (
   <Provider store={store}>
     <BrowserRouter>
-      
-        <App />
-      
+      <App />
     </BrowserRouter>
   </Provider>
 );
