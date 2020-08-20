@@ -23,6 +23,10 @@ import {
   CREATE_TICKET_START,
   CREATE_TICKET_SUCCESS,
   CREATE_TICKET_FAIL,
+  TICKET_TYPE_CHANGE,
+  GET_TAGS_START,
+  GET_TAGS_SUCCESS,
+  GET_TAGS_FAIL,
 } from "./actionTypes";
 
 export const showModal = () => ({
@@ -39,6 +43,11 @@ export const changeForm = (form) => {
     form,
   };
 };
+
+export const changeTicketType = (ticketType) => ({
+  type: TICKET_TYPE_CHANGE,
+  ticketType,
+});
 
 export const resetForm = () => ({
   type: TICKET_FORM_RESET,
@@ -189,6 +198,37 @@ export const getUsers = (companyName) => {
       })
       .catch((err) => {
         dispatch(getUsersFail(err));
+      });
+  };
+};
+
+export const getTagsStart = (companyName) => ({
+  type: GET_TAGS_START,
+  companyName,
+});
+
+export const getTagsSuccess = (tags) => ({
+  type: GET_TAGS_SUCCESS,
+  tags,
+});
+
+export const getTagsFail = (err) => ({
+  type: GET_TAGS_FAIL,
+  err,
+});
+
+export const getTags = (companyName) => {
+  return (dispatch) => {
+    dispatch(getTagsStart(companyName));
+    axios
+      .get(`/companies/${companyName}/tags.json`)
+      .then((response) => {
+        const tags = response.data.filter((t) => t);
+        console.log(tags);
+        dispatch(getTagsSuccess(tags));
+      })
+      .catch((err) => {
+        dispatch(getTagsFail(err));
       });
   };
 };

@@ -1,5 +1,5 @@
 .Modal {
-  border-radius: 16px;
+  width: 590px !important;
   top: 20px;
 }
 
@@ -7,33 +7,67 @@
   pointer-events: none;
 }
 
-.Low span {
-  display: inline-block;
-  color: rgb(32, 170, 32);
-  font-size: 0.8rem;
-  padding: 0;
-  padding-left: 4px;
-  margin: 0;
-  font-weight: bold;
+.RadioButtons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.Middle span {
-  display: inline-block;
-  color: rgb(228, 228, 0);
-  font-size: 0.8rem;
-  padding: 0;
-  padding-left: 4px;
-  margin: 0;
+.FormLabel {
   font-weight: bold;
+  font-size: 13px;
+  color: #595959;
 }
 
-.High span {
-  display: inline-block;
-  color: red;
-  font-size: 0.8rem;
-  padding: 0;
-  padding-left: 4px;
-  margin: 0;
-  font-weight: bold;
+.FormItem {
+  margin-bottom: 12px;
 }
 
+.Priority {
+  font-size: 0.8rem;
+  padding: 2px 7px;
+  margin: 0;
+  padding-left: 4px;
+  border-radius: 18px;
+  vertical-align: center;
+}
+
+.Priority::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.Low {
+  color: #40d36c;
+}
+
+.Low::before {
+  border: 2px solid #40d36c;
+}
+
+.Middle {
+  color: #faad14;
+}
+.Middle::before {
+  border: 2px solid #faad14;
+}
+.High {
+  color: white;
+  background: #f5222d;
+}
+.High::before {
+  border: 2px solid white;
+}
+
+.DateInput {
+  border-radius: 18px;
+  height: 32px;
+  border: solid 1px #d9d9d9;
+  width: 50%;
+  padding: 0 7px;
+  outline: none;
+}

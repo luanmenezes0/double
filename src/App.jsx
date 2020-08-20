@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+import "./App.less";
 import Footer from "./components/Footer/Footer";
 import Auth from "./containers/Auth/Auth";
 import { Switch, Route } from "react-router-dom";

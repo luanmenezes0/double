@@ -2,11 +2,6 @@ import React from "react";
 import styles from "./TicketCreation.module.css";
 import { connect } from "react-redux";
 import {
-  CaretUpOutlined,
-  CaretRightOutlined,
-  CaretDownOutlined,
-} from "@ant-design/icons";
-import {
   getCompanies,
   closeModal,
   showModal,
@@ -17,6 +12,8 @@ import {
   getUsers,
   resetForm,
   createTicket,
+  changeTicketType,
+  getTags,
 } from "../../redux/Tickets/actions";
 import {
   Button,
@@ -27,6 +24,7 @@ import {
   Select,
   Spin,
   Collapse,
+  message,
 } from "antd";
 
 class TicketCreation extends React.PureComponent {
@@ -37,20 +35,39 @@ class TicketCreation extends React.PureComponent {
   ];
 
   createTicket = () => {
-    const { form, onCreateTicket, onCloseModal } = this.props;
+    const {
+      form,
+      onCreateTicket,
+      onCloseModal,
+      onResetForm,
+      ticketType,
+    } = this.props;
 
-    const ticketData = {
-      ticketType: form.ticketType,
-      company: form.company,
-      buildingType: form.buildingType,
-      description: form.description,
-      priority: form.priority,
-      deadline: form.deadline,
-      assignee: form.assignee,
-      status: "open",
-    };
-    onCreateTicket(ticketData);
-    onCloseModal();
+    if (
+      !form.company ||
+      !form.description ||
+      !(form.asset || form.buildingType || form.procedure)
+    ) {
+      message.warning("Preencha todos os campos obrigatórios");
+    } else {
+      const ticketData = {
+        ticketType: ticketType,
+        company: form.company,
+        asset: form.asset,
+        buildingType: form.buildingType,
+        procedure: form.procedure,
+        description: form.description,
+        priority: form.priority,
+        deadline: form.deadline,
+        assignee: form.assignee,
+        tags: form.tags,
+        status: "open",
+      };
+      onCreateTicket(ticketData);
+      onCloseModal();
+      onResetForm();
+      message.success("Ticket criado com sucesso!");
+    }
   };
 
   render() {
@@ -58,7 +75,6 @@ class TicketCreation extends React.PureComponent {
       visible,
       onCloseModal,
       formLoading,
-      loading,
       companies,
       onFormChange,
       onFetchCompanies,
@@ -66,21 +82,31 @@ class TicketCreation extends React.PureComponent {
       onFetchBuildingTypes,
       onFetchProcedures,
       form,
+      loading,
       procedures,
       assets,
       buildingTypes,
       users,
       onFetchUsers,
+      onResetForm,
+      onTicketTypeChange,
+      ticketType,
+      onFetchTags,
+      tags,
     } = this.props;
 
     const assetsForm = (
-      <Form.Item label="Bem">
+      <Form.Item
+        required
+        className={styles.FormItem}
+        label={<span className={styles.FormLabel}>Bem</span>}
+      >
         <Select
           value={form.asset}
           className={!form.company ? styles.Disabled : null}
           onChange={(value) => onFormChange(["asset", value])}
           allowClear
-          onDropdownVisibleChange={() => onFetchAssets(form.company)}
+          onFocus={() => onFetchAssets(form.company)}
           notFoundContent={formLoading ? <Spin size="small" /> : null}
         >
           {assets.map((a) => (
@@ -91,13 +117,17 @@ class TicketCreation extends React.PureComponent {
     );
 
     const buildingTypeForm = (
-      <Form.Item label="Tipo Predial">
+      <Form.Item
+        required
+        className={styles.FormItem}
+        label={<span className={styles.FormLabel}>Tipo Predial</span>}
+      >
         <Select
           value={form.buildingType}
           className={!form.company ? styles.Disabled : null}
           onChange={(value) => onFormChange(["buildingType", value])}
           allowClear
-          onDropdownVisibleChange={() => onFetchBuildingTypes(form.company)}
+          onFocus={() => onFetchBuildingTypes(form.company)}
           notFoundContent={formLoading ? <Spin size="small" /> : null}
         >
           {buildingTypes.map((p) => (
@@ -108,14 +138,17 @@ class TicketCreation extends React.PureComponent {
     );
 
     const proceduresForm = (
-      <Form.Item label="Procedimento">
+      <Form.Item
+        required
+        className={styles.FormItem}
+        label={<span className={styles.FormLabel}>Procedimento</span>}
+      >
         <Select
           value={form.procedure}
           className={!form.company ? styles.Disabled : null}
           onChange={(value) => onFormChange(["procedure", value])}
           allowClear
-          onDropdownVisibleChange={() => onFetchProcedures(form.company)}
-          onMouseEnter={() => onFetchProcedures(form.company)}
+          onFocus={() => onFetchProcedures(form.company)}
           notFoundContent={formLoading ? <Spin size="small" /> : null}
         >
           {procedures.map((p) => (
@@ -126,7 +159,7 @@ class TicketCreation extends React.PureComponent {
     );
 
     let ticketTypeForm;
-    switch (form.ticketType) {
+    switch (ticketType) {
       case "1":
         ticketTypeForm = assetsForm;
         break;
@@ -142,112 +175,177 @@ class TicketCreation extends React.PureComponent {
 
     return (
       <>
-        <Modal
-          className={styles.Modal}
-          title="Novo Ticket"
-          visible={visible}
-          onOk={this.createTicket}
-          onCancel={onCloseModal}
-          footer={[
-            <Button shape="round" key="back" onClick={onCloseModal}>
-              Cancelar
-            </Button>,
-            <Button
-              shape="round"
-              key="submit"
-              type="primary"
-              onClick={this.createTicket}
-            >
-              Criar Ticket
-            </Button>,
-          ]}
-        >
-          <Radio.Group
-            defaultValue={form.ticketType}
-            buttonStyle="solid"
-            style={{ marginBottom: "24px" }}
-            options={this.options}
-            optionType="button"
-            onChange={(e) => onFormChange(["ticketType", e.target.value])}
-          />
-          <Form
-            colon={false}
-            labelCol={{ span: 5, offset: 1 }}
-            onFinish={this.createTicket}
-          >
-            <Form.Item label="Empresa">
-              <Select
-                onChange={(value) => onFormChange(["company", value])}
-                allowClear
-                showSearch
-                onDropdownVisibleChange={onFetchCompanies}
-                notFoundContent={formLoading ? <Spin size="small" /> : null}
+        <Spin spinning={loading}>
+          <Modal
+            className={styles.Modal}
+            title="Novo Ticket"
+            visible={visible}
+            onOk={this.createTicket}
+            onCancel={() => {
+              onCloseModal();
+              onResetForm();
+            }}
+            footer={[
+              <Button
+                key="back"
+                onClick={() => {
+                  onCloseModal();
+                  onResetForm();
+                }}
               >
-                {companies.map((c) => (
-                  <Select.Option key={c}>{c}</Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            {ticketTypeForm}
-            <Form.Item label="Descrição">
-              <Input.TextArea
-                onChange={(e) => onFormChange(["description", e.target.value])}
+                Cancelar
+              </Button>,
+              <Button
+                key="submit"
+                type="primary"
+                onClick={this.createTicket}
+              >
+                Criar Ticket
+              </Button>,
+            ]}
+          >
+            <div className={styles.RadioButtons}>
+              <Radio.Group
+                defaultValue={ticketType}
+                buttonStyle="solid"
+                style={{ marginBottom: "24px" }}
+                options={this.options}
+                optionType="button"
+                onChange={(e) => {
+                  onTicketTypeChange(e.target.value);
+                  onResetForm();
+                }}
               />
-            </Form.Item>
-            <Collapse ghost>
-              <Collapse.Panel header="Opções Avançadas">
-                <Form.Item label="Prioridade">
-                  <Select
-                    defaultValue="low"
-                    onChange={(value) => onFormChange(["priority", value])}
-                  >
-                    <Select.Option value="low" key="low">
-                      <span className={styles.Low}>
-                        <CaretDownOutlined />
-                        <span>Baixa</span>
-                      </span>
-                    </Select.Option>
-                    <Select.Option value="middle" key="middle">
-                      <span className={styles.Middle}>
-                        <CaretRightOutlined />
-                        <span>Média</span>
-                      </span>
-                    </Select.Option>
-                    <Select.Option value="high" key="high">
-                      <span className={styles.High}>
-                        <CaretUpOutlined />
-                        <span>Alta</span>
-                      </span>
-                    </Select.Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item
-                  label="Prazo"
-                  onChange={(e) => onFormChange(["deadline", e.target.value])}
+            </div>
+
+            <Form
+              colon={false}
+              labelCol={{ span: 6, offset: 0 }}
+              preserve={false}
+              onFinish={this.createTicket}
+            >
+              <Form.Item
+                className={styles.FormItem}
+                label={<span className={styles.FormLabel}>Empresa</span>}
+                required
+              >
+                <Select
+                  value={form.company}
+                  onChange={(value) => onFormChange(["company", value])}
+                  allowClear
+                  showSearch
+                  onFocus={onFetchCompanies}
+                  notFoundContent={formLoading ? <Spin size="small" /> : null}
                 >
-                  <input type="date" />
-                </Form.Item>
-                <Form.Item label="Responsável">
-                  <Select
-                    className={!form.company ? styles.Disabled : null}
-                    onChange={(value) => onFormChange(["assignee", value])}
-                    allowClear
-                    onDropdownVisibleChange={() => onFetchUsers(form.company)}
-                    onMouseEnter={() => onFetchUsers(form.company)}
-                    notFoundContent={formLoading ? <Spin size="small" /> : null}
+                  {companies.map((c) => (
+                    <Select.Option key={c}>{c}</Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              {ticketTypeForm}
+              <Form.Item
+                required
+                className={styles.FormItem}
+                label={<span className={styles.FormLabel}>Descrição</span>}
+              >
+                <Input.TextArea
+                  value={form.description}
+                  onChange={(e) =>
+                    onFormChange(["description", e.target.value])
+                  }
+                />
+              </Form.Item>
+              <Collapse ghost>
+                <Collapse.Panel
+                  header={
+                    <span className={styles.FormLabel}>Opções Avançadas</span>
+                  }
+                >
+                  <Form.Item
+                    className={styles.FormItem}
+                    label={<span className={styles.FormLabel}>Prioridade</span>}
                   >
-                    {users.map((u) => (
-                      <Select.Option key={u}>{u}</Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Tags">
-                  <Select mode="tags"></Select>
-                </Form.Item>
-              </Collapse.Panel>
-            </Collapse>
-          </Form>
-        </Modal>
+                    <Select
+                      defaultValue="low"
+                      onChange={(value) => onFormChange(["priority", value])}
+                    >
+                      <Select.Option value="low" key="low">
+                        <span className={`${styles.Priority} ${styles.Low}`}>
+                          Baixa
+                        </span>
+                      </Select.Option>
+                      <Select.Option value="middle" key="middle">
+                        <span className={`${styles.Priority} ${styles.Middle}`}>
+                          <span>Média</span>
+                        </span>
+                      </Select.Option>
+                      <Select.Option value="high" key="high">
+                        <span className={`${styles.Priority} ${styles.High}`}>
+                          <span>Alta</span>
+                        </span>
+                      </Select.Option>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    className={styles.FormItem}
+                    label={<span className={styles.FormLabel}>Prazo</span>}
+                  >
+                    <input
+                      value={form.deadline || ""}
+                      onChange={(e) =>
+                        onFormChange(["deadline", e.target.value])
+                      }
+                      className={styles.DateInput}
+                      type="date"
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    className={styles.FormItem}
+                    label={
+                      <span className={styles.FormLabel}>Responsável</span>
+                    }
+                  >
+                    <Select
+                      className={!form.company ? styles.Disabled : null}
+                      onChange={(value) => onFormChange(["assignee", value])}
+                      value={form.assignee}
+                      allowClear
+                      onFocus={() => onFetchUsers(form.company)}
+                      notFoundContent={
+                        formLoading ? <Spin size="small" /> : null
+                      }
+                    >
+                      {users.map((u) => (
+                        <Select.Option key={u}>{u}</Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    className={styles.FormItem}
+                    label={<span className={styles.FormLabel}>Tags</span>}
+                  >
+                    <Select
+                      className={!form.company ? styles.Disabled : null}
+                      onChange={(value) => onFormChange(["tags", value])}
+                      value={form.tags}
+                      allowClear
+                      onFocus={() => onFetchTags(form.company)}
+                      notFoundContent={
+                        formLoading ? <Spin size="small" /> : null
+                      }
+                      mode="tags"
+                    >
+                      {tags.map((t) => (
+                        <Select.Option key={t}>{t}</Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Collapse.Panel>
+              </Collapse>
+            </Form>
+          </Modal>
+        </Spin>
       </>
     );
   }
@@ -256,17 +354,20 @@ const mapStateToProps = (state) => ({
   visible: state.tickets.showModal,
   formLoading: state.tickets.formLoading,
   loading: state.tickets.loading,
+  ticketType: state.tickets.ticketType,
   form: state.tickets.form,
   companies: state.tickets.companies,
   procedures: state.tickets.procedures,
   assets: state.tickets.assets,
   buildingTypes: state.tickets.buildingTypes,
   users: state.tickets.users,
+  tags: state.tickets.tags,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onShowModal: () => dispatch(showModal()),
   onFormChange: (form) => dispatch(changeForm(form)),
+  onTicketTypeChange: (type) => dispatch(changeTicketType(type)),
   onCloseModal: () => dispatch(closeModal()),
   onFetchCompanies: () => dispatch(getCompanies()),
   onFetchAssets: (company) => dispatch(getAssets(company)),
@@ -275,6 +376,7 @@ const mapDispatchToProps = (dispatch) => ({
   onFetchUsers: (company) => dispatch(getUsers(company)),
   onResetForm: () => dispatch(resetForm()),
   onCreateTicket: (ticketData) => dispatch(createTicket(ticketData)),
+  onFetchTags: (company) => dispatch(getTags(company)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TicketCreation);

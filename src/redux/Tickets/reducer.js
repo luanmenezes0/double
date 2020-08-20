@@ -21,6 +21,10 @@ import {
   CREATE_TICKET_START,
   CREATE_TICKET_SUCCESS,
   CREATE_TICKET_FAIL,
+  TICKET_TYPE_CHANGE,
+  GET_TAGS_START,
+  GET_TAGS_SUCCESS,
+  GET_TAGS_FAIL,
 } from "./actionTypes";
 
 const initialState = {
@@ -31,8 +35,9 @@ const initialState = {
   assets: [],
   buildingTypes: [],
   users: [],
+  tags: [],
+  ticketType: "1",
   form: {
-    ticketType: "1",
     priority: "low",
   },
   loading: false,
@@ -52,7 +57,10 @@ const reducer = (state = initialState, action) => {
       };
 
     case TICKET_FORM_RESET:
-      return { ...state, form: { ...state.form, asset: null } };
+      return { ...state, form: { ...initialState.form } };
+
+    case TICKET_TYPE_CHANGE:
+      return updateObject(state, { ticketType: action.ticketType });
 
     case SHOW_TICKET_CREATION_MODAL:
       return updateObject(state, { showModal: true });
@@ -120,6 +128,15 @@ const reducer = (state = initialState, action) => {
       return updateObject(state, { loading: false });
     case CREATE_TICKET_FAIL:
       return updateObject(state, { loading: false });
+
+    case GET_TAGS_START:
+      return updateObject(state, { formLoading: true });
+
+    case GET_TAGS_SUCCESS:
+      return updateObject(state, { formLoading: false, tags: action.tags });
+
+    case GET_TAGS_FAIL:
+      return updateObject(state, { formLoading: false, err: action.err });
     default:
       return state;
   }

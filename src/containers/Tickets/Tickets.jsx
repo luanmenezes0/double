@@ -7,6 +7,7 @@ import TicketCreation from "../../components/TicketCreation/TicketCreation";
 import { Redirect } from "react-router-dom";
 import { showModal } from "../../redux/Tickets/actions";
 import { logout } from "../../redux/Auth/actions";
+import { PlusOutlined } from "@ant-design/icons";
 
 class Tickets extends Component {
   render() {
@@ -18,7 +19,7 @@ class Tickets extends Component {
         />
         <main className={styles.Tickets}>
           <Button type="primary" onClick={this.props.onShowModal} shape="round">
-            + Novo Ticket
+            <PlusOutlined /> Novo Ticket
           </Button>
           <Spin spinning={this.props.loading}>
             <TicketCreation />
