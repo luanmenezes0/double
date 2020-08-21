@@ -25,6 +25,12 @@ import {
   GET_TAGS_START,
   GET_TAGS_SUCCESS,
   GET_TAGS_FAIL,
+  FETCH_TICKETS_START,
+  FETCH_TICKETS_SUCCESS,
+  FETCH_TICKETS_FAIL,
+  DELETE_TICKET_START,
+  DELETE_TICKET_SUCCESS,
+  DELETE_TICKET_FAIL,
 } from "./actionTypes";
 
 const initialState = {
@@ -41,6 +47,8 @@ const initialState = {
     priority: "low",
   },
   loading: false,
+  gridLoading: false,
+  tickets: [],
 };
 
 export const updateObject = (oldObject, updatedProperties) => ({
@@ -137,6 +145,25 @@ const reducer = (state = initialState, action) => {
 
     case GET_TAGS_FAIL:
       return updateObject(state, { formLoading: false, err: action.err });
+
+    case FETCH_TICKETS_START:
+      return updateObject(state, { gridLoading: true });
+
+    case FETCH_TICKETS_SUCCESS:
+      return updateObject(state, {
+        gridLoading: false,
+        tickets: action.tickets,
+      });
+    
+    case FETCH_TICKETS_FAIL:
+      return updateObject(state, { gridLoading: false, err: action.err });
+
+    case DELETE_TICKET_START:
+      return updateObject(state, { gridLoading: true });
+    case DELETE_TICKET_SUCCESS:
+      return updateObject(state, { gridLoading: false });
+    case DELETE_TICKET_FAIL:
+      return updateObject(state, { gridLoading: false, err: action.err });
     default:
       return state;
   }

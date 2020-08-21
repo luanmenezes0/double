@@ -6,19 +6,22 @@ import { Switch, Route } from "react-router-dom";
 import Tickets from "./containers/Tickets/Tickets";
 import { connect } from "react-redux";
 import { auth } from "./redux/Auth/actions";
+import { Layout } from "antd";
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="Content">
+      <Layout style={{ height: "100%" }}>
+        <Layout.Content>
           <Switch>
             <Route path="/auth" component={Auth} />
             <Route path="/" component={Tickets} />
           </Switch>
-        </div>
-        <Footer />
-      </div>
+        </Layout.Content>
+        <Layout.Footer>
+          <Footer />
+        </Layout.Footer>
+      </Layout>
     );
   }
 }

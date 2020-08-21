@@ -1,16 +1,8 @@
 .Footer {
-  background: #efefef;
-  padding: 0 30px;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 90px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .Contact {
   text-align: center;
-}
-
-.Version {
-  text-align: right;
 }

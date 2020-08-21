@@ -27,6 +27,12 @@ import {
   GET_TAGS_START,
   GET_TAGS_SUCCESS,
   GET_TAGS_FAIL,
+  FETCH_TICKETS_START,
+  FETCH_TICKETS_SUCCESS,
+  FETCH_TICKETS_FAIL,
+  DELETE_TICKET_START,
+  DELETE_TICKET_SUCCESS,
+  DELETE_TICKET_FAIL,
 } from "./actionTypes";
 
 export const showModal = () => ({
@@ -224,7 +230,7 @@ export const getTags = (companyName) => {
       .get(`/companies/${companyName}/tags.json`)
       .then((response) => {
         const tags = response.data.filter((t) => t);
-        console.log(tags);
+        
         dispatch(getTagsSuccess(tags));
       })
       .catch((err) => {
@@ -256,9 +262,75 @@ export const createTicket = (ticketData) => {
       .then((response) => {
         const newTicket = response.data;
         dispatch(createTicketSuccess(newTicket));
+        
       })
       .catch((err) => {
         dispatch(createTicketFail(err));
+      });
+  };
+};
+
+export const fetchTicketsStart = () => ({
+  type: FETCH_TICKETS_START,
+});
+
+export const fetchTicketsSuccess = (tickets) => ({
+  type: FETCH_TICKETS_SUCCESS,
+  tickets,
+});
+
+export const fetchTicketsFail = (err) => ({
+  type: FETCH_TICKETS_FAIL,
+  err,
+});
+
+export const fetchTickets = () => {
+  return (dispatch) => {
+    dispatch(fetchTicketsStart());
+    axios
+      .get(`/tickets.json`)
+      .then((response) => {
+        const tickets = [];
+        for (let key in response.data) {
+          tickets.push({
+            ...response.data[key],
+            id: key,
+            key: key,
+          });
+        }
+        
+        dispatch(fetchTicketsSuccess(tickets));
+      })
+      .catch((err) => {
+        dispatch(fetchTicketsFail(err));
+      });
+  };
+};
+
+export const deleteTicketStart = (ticketId) => ({
+  type: DELETE_TICKET_START,
+  ticketId,
+});
+
+export const deleteTicketSuccess = () => ({
+  type: DELETE_TICKET_SUCCESS,
+});
+
+export const deleteTicketFail = (err) => ({
+  type: DELETE_TICKET_FAIL,
+  err,
+});
+
+export const deleteTicket = (id) => {
+  return (dispatch) => {
+    dispatch(deleteTicketStart(id));
+    axios
+      .delete(`tickets/${id}.json`)
+      .then(() => {
+        dispatch(deleteTicketSuccess());
+      })
+      .catch((err) => {
+        dispatch(deleteTicketFail(err));
       });
   };
 };

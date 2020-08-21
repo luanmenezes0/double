@@ -23,46 +23,6 @@
   margin-bottom: 12px;
 }
 
-.Priority {
-  font-size: 0.8rem;
-  padding: 2px 7px;
-  margin: 0;
-  padding-left: 4px;
-  border-radius: 18px;
-  vertical-align: center;
-}
-
-.Priority::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  display: inline-block;
-  margin-right: 5px;
-}
-
-.Low {
-  color: #40d36c;
-}
-
-.Low::before {
-  border: 2px solid #40d36c;
-}
-
-.Middle {
-  color: #faad14;
-}
-.Middle::before {
-  border: 2px solid #faad14;
-}
-.High {
-  color: white;
-  background: #f5222d;
-}
-.High::before {
-  border: 2px solid white;
-}
-
 .DateInput {
   border-radius: 18px;
   height: 32px;
@@ -70,4 +30,5 @@
   width: 50%;
   padding: 0 7px;
   outline: none;
+  
 }

@@ -26,6 +26,7 @@ import {
   Collapse,
   message,
 } from "antd";
+import PriorityBadge from "../UI/PriorityBadge";
 
 class TicketCreation extends React.PureComponent {
   options = [
@@ -195,11 +196,7 @@ class TicketCreation extends React.PureComponent {
               >
                 Cancelar
               </Button>,
-              <Button
-                key="submit"
-                type="primary"
-                onClick={this.createTicket}
-              >
+              <Button key="submit" type="primary" onClick={this.createTicket}>
                 Criar Ticket
               </Button>,
             ]}
@@ -270,19 +267,13 @@ class TicketCreation extends React.PureComponent {
                       onChange={(value) => onFormChange(["priority", value])}
                     >
                       <Select.Option value="low" key="low">
-                        <span className={`${styles.Priority} ${styles.Low}`}>
-                          Baixa
-                        </span>
+                        <PriorityBadge type="low" />
                       </Select.Option>
                       <Select.Option value="middle" key="middle">
-                        <span className={`${styles.Priority} ${styles.Middle}`}>
-                          <span>Média</span>
-                        </span>
+                        <PriorityBadge type="middle" />
                       </Select.Option>
                       <Select.Option value="high" key="high">
-                        <span className={`${styles.Priority} ${styles.High}`}>
-                          <span>Alta</span>
-                        </span>
+                        <PriorityBadge type="high" />
                       </Select.Option>
                     </Select>
                   </Form.Item>

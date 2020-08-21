@@ -1,36 +1,52 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import styles from "./Tickets.module.css";
-import { Button, Empty, Spin } from "antd";
+import { Button, Divider } from "antd";
 import Header from "../../components/Header/Header";
 import TicketCreation from "../../components/TicketCreation/TicketCreation";
 import { Redirect } from "react-router-dom";
-import { showModal } from "../../redux/Tickets/actions";
+import { showModal, fetchTickets } from "../../redux/Tickets/actions";
 import { logout } from "../../redux/Auth/actions";
 import { PlusOutlined } from "@ant-design/icons";
+import TicketsList from "../../components/TicketsList/TicketsList";
+import AppBreadcrumb from "../../components/AppBreadcrumb/AppBreadcrumb";
 
 class Tickets extends Component {
+  componentDidMount() {
+    this.props.onFetchTickets();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.tickets === prevProps.tickets) {
+      this.props.onFetchTickets();
+    }
+  }
+
   render() {
+    const {
+      onLogoutUser,
+      location,
+      onShowModal,
+      tickets,
+      gridLoading,
+    } = this.props;
+
     const ticketsPage = (
       <>
-        <Header
-          logout={this.props.onLogoutUser}
-          user={this.props.location.name}
-        />
+        <Header logout={onLogoutUser} user={location.name} />
+        <Divider style={{ margin: '0' }} />
+        <AppBreadcrumb location={location}/>
         <main className={styles.Tickets}>
-          <Button type="primary" onClick={this.props.onShowModal} shape="round">
+          <Button type="primary" onClick={onShowModal} shape="round">
             <PlusOutlined /> Novo Ticket
           </Button>
-          <Spin spinning={this.props.loading}>
-            <TicketCreation />
-          </Spin>
-
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          <TicketCreation />
+          <TicketsList tickets={tickets} loading={gridLoading} />
         </main>
       </>
     );
-    return ticketsPage;
-    //return this.props.isAuth ? ticketsPage : <Redirect to="/auth" />
+    //return ticketsPage;
+    return this.props.isAuth ? ticketsPage : <Redirect to="/auth" />
   }
 }
 
@@ -38,11 +54,14 @@ const mapStateToProps = (state) => ({
   isAuth: state.auth.isAuth,
   modalVisible: state.tickets.showModal,
   loading: state.tickets.loading,
+  gridLoading: state.tickets.loading,
+  tickets: state.tickets.tickets,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onLogoutUser: () => dispatch(logout()),
   onShowModal: () => dispatch(showModal()),
+  onFetchTickets: () => dispatch(fetchTickets()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tickets);
